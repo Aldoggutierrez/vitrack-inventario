@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipo;
+use App\Models\Ubicacion;
 use Illuminate\Http\Request;
 
 class EquipoController extends Controller
@@ -14,8 +15,7 @@ class EquipoController extends Controller
      */
     public function index()
     {
-        $equipos = Equipo::all();
-        return view('pages.equipos.index',["equipos" => $equipos]);
+        return view('pages.equipos.index',["equipos" => Equipo::all()]);
     }
 
     /**
@@ -25,7 +25,7 @@ class EquipoController extends Controller
      */
     public function create()
     {
-        return view('pages.equipos.create');
+        return view('pages.equipos.create',["ubicaciones" => Ubicacion::all()]);
     }
 
     /**
@@ -36,7 +36,17 @@ class EquipoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            "nombre" => "required|string",
+            "marca" => "required|string",
+            "numero_serie" => "required|alpha_num|unique:equipos,numero_serie",
+            "ubicacion_id" => "required|integer|exists:ubicacions,id",
+            "fecha_garantia" => "required|date"
+        ]);
+
+        Equipo::create($validated);
+
+        return view('pages.equipos.index',["equipos" => Equipo::all()]);
     }
 
     /**
