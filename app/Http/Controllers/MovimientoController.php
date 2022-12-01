@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Equipo;
 use App\Models\Movimiento;
+use App\Models\Ubicacion;
 use Illuminate\Http\Request;
 
 class MovimientoController extends Controller
@@ -14,7 +16,7 @@ class MovimientoController extends Controller
      */
     public function index()
     {
-        //
+        return view("pages.movimientos.index",["movimientos" => Movimiento::all()]);
     }
 
     /**
@@ -24,7 +26,7 @@ class MovimientoController extends Controller
      */
     public function create()
     {
-        //
+        return view("pages.movimientos.create",["ubicaciones" => Ubicacion::all(),"equipos" => Equipo::all()]);
     }
 
     /**
@@ -35,7 +37,24 @@ class MovimientoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            "equipo_id" => "required|exists:equipos,id",
+            "ubicacion_id" => "required|exists:ubicacions,id"
+        ]);
+
+        $equipo = Equipo::find($request->equipo_id);
+
+        $equipo->update([
+            "ubicacion_id" => $request->ubicacion_id
+        ]);
+
+        Movimiento::create([
+            ...$validated,
+            "fecha" => now()->toDate(),
+            "hora" => now('America/Monterrey')->toTimeString('minute')
+        ]);
+
+        return redirect()->route("movimientos.index");
     }
 
     /**
@@ -57,7 +76,7 @@ class MovimientoController extends Controller
      */
     public function edit(Movimiento $movimiento)
     {
-        //
+        return view("pages.movimientos.edit",["movmiento" => $movimiento]);
     }
 
     /**
@@ -69,7 +88,14 @@ class MovimientoController extends Controller
      */
     public function update(Request $request, Movimiento $movimiento)
     {
-        //
+        $validated = $request->validate([
+            "equipo_id" => "required|exists:equipos,id",
+            "ubicacion_id" => "required|exists:ubicacions,id"
+        ]);
+
+        $movimiento->update($validated);
+        $movimiento->save();
+        return redirect()->route("movimientos.index");
     }
 
     /**
@@ -80,6 +106,7 @@ class MovimientoController extends Controller
      */
     public function destroy(Movimiento $movimiento)
     {
-        //
+        $movimiento->delete();
+        return redirect()->route("movimientos.index");
     }
 }

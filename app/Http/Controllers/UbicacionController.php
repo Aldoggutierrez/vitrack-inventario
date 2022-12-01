@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ubicacion;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class UbicacionController extends Controller
 {
@@ -14,7 +15,7 @@ class UbicacionController extends Controller
      */
     public function index()
     {
-        //
+        return view("pages.ubicaciones.index",["ubicaciones" => Ubicacion::all()]);
     }
 
     /**
@@ -24,7 +25,7 @@ class UbicacionController extends Controller
      */
     public function create()
     {
-        //
+        return view("pages.ubicaciones.create");
     }
 
     /**
@@ -35,7 +36,12 @@ class UbicacionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            "nombre" => "required|string|unique:ubicacions,nombre"
+        ]);
+
+        Ubicacion::create($validated);
+        return redirect()->route("ubicaciones.index");
     }
 
     /**
@@ -57,7 +63,7 @@ class UbicacionController extends Controller
      */
     public function edit(Ubicacion $ubicacion)
     {
-        //
+        return view("pages.ubicaciones.edit",["ubicacion" => $ubicacion]);
     }
 
     /**
@@ -69,7 +75,12 @@ class UbicacionController extends Controller
      */
     public function update(Request $request, Ubicacion $ubicacion)
     {
-        //
+        $validated = $request->validate([
+            "nombre" => [Rule::unique("ubicacions")->ignore($ubicacion->id),"required","string"]
+        ]);
+        $ubicacion->update($validated);
+        $ubicacion->save();
+        return redirect()->route("ubicaciones.index");
     }
 
     /**
@@ -80,6 +91,7 @@ class UbicacionController extends Controller
      */
     public function destroy(Ubicacion $ubicacion)
     {
-        //
+        $ubicacion->delete();
+        return redirect()->route("ubicaciones.index");
     }
 }

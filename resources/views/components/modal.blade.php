@@ -8,12 +8,16 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="cuerpoModal">
                 Cuerpo
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" id="deleteButton" class="btn bg-gradient-primary">Eliminar</button>
+                <form action="" method="POST" id="delete-form">
+                    @method('DELETE')
+                    @csrf
+                    <button type="button" id="deleteButton" class="btn bg-gradient-primary">Eliminar</button>
+                </form>
             </div>
         </div>
     </div>

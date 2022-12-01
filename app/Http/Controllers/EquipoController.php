@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Equipo;
 use App\Models\Ubicacion;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
 
 class EquipoController extends Controller
 {
@@ -83,14 +85,14 @@ class EquipoController extends Controller
         $validated = $request->validate([
             "nombre" => "required|string",
             "marca" => "required|string",
-            "numero_serie" => "required|alpha_num|unique:equipos,numero_serie",
+            "numero_serie" => [Rule::unique('equipos')->ignore($equipo->id),"required","alpha_num"],
             "ubicacion_id" => "required|integer|exists:ubicacions,id",
             "fecha_garantia" => "required|date"
         ]);
 
         $equipo->update($validated);
         $equipo->save();
-        return view('pages.equipos.index',["equipos" => Equipo::all()]);
+        return redirect()->route("equipos.index");
     }
 
     /**
