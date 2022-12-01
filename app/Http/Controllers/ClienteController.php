@@ -14,7 +14,7 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        //
+        return view("pages.clientes.index",["clientes" => Cliente::all()]);
     }
 
     /**
@@ -24,7 +24,7 @@ class ClienteController extends Controller
      */
     public function create()
     {
-        //
+        return view("pages.clientes.create");
     }
 
     /**
@@ -35,7 +35,15 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            "nombre" => "required|string",
+            "apellido" => "required|string",
+            "fecha_nacimiento" => "required|date",
+            "telefono" => "required|numeric",
+        ]);
+
+        Cliente::create($validated);
+        return redirect()->route("clientes.index");
     }
 
     /**
@@ -57,7 +65,7 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente)
     {
-        //
+        return view("pages.clientes.edit",["cliente" => $cliente]);
     }
 
     /**
@@ -69,7 +77,16 @@ class ClienteController extends Controller
      */
     public function update(Request $request, Cliente $cliente)
     {
-        //
+        $validated = $request->validate([
+            "nombre" => "required|string",
+            "apellido" => "required|string",
+            "fecha_nacimiento" => "required|date",
+            "telefono" => "required|numeric",
+        ]);
+
+        $cliente->update($validated);
+        $cliente->save();
+        return redirect()->route("clientes.index");
     }
 
     /**
@@ -80,6 +97,12 @@ class ClienteController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
-        //
+        if ($cliente->eventos) {
+            foreach ($cliente->eventos  as $evento) {
+                $evento->delete();
+            }
+        }
+        $cliente->delete();
+        return redirect()->route("clientes.index");
     }
 }

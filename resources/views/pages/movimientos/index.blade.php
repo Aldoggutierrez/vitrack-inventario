@@ -11,8 +11,10 @@
 
             if (id > 0) {
                 $('.modal-body').html(`<p>${id}</p>`);
+                $('#exampleModalLabel').html(`Eliminar movimiento`);
+                $('#cuerpoModal').html(`Seguro que desea eliminar el movimiento?`);
                 $('#deleteButton').on('click', function() {
-                    var url = "{{ route('equipos.destroy', [':empid']) }}";
+                    var url = "{{ route('movimientos.destroy', [':empid']) }}";
                     url = url.replace(':empid', id);
                     $('#delete-form').attr('action', url)
                     $('#delete-form').submit()

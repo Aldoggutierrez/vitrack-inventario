@@ -49,7 +49,7 @@
                     <span class="nav-link-text ms-1">Clientes</span>
                 </a>
             </li>
-            <li class="nav-item mt-3 d-flex align-items-center">
+            {{-- <li class="nav-item mt-3 d-flex align-items-center">
                 <div class="ps-4">
                     <i class="fab fa-laravel" style="color: #f4645f;"></i>
                 </div>
@@ -132,7 +132,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Sign Up</span>
                 </a>
-            </li>
+            </li> --}}
         </ul>
     </div>
 </aside>
