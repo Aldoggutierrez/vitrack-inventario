@@ -68,7 +68,7 @@ class EquipoController extends Controller
      */
     public function edit(Equipo $equipo)
     {
-        //
+        return view("pages.equipos.edit",["equipo" => $equipo,"ubicaciones" => Ubicacion::all()]);
     }
 
     /**
@@ -80,7 +80,17 @@ class EquipoController extends Controller
      */
     public function update(Request $request, Equipo $equipo)
     {
-        //
+        $validated = $request->validate([
+            "nombre" => "required|string",
+            "marca" => "required|string",
+            "numero_serie" => "required|alpha_num|unique:equipos,numero_serie",
+            "ubicacion_id" => "required|integer|exists:ubicacions,id",
+            "fecha_garantia" => "required|date"
+        ]);
+
+        $equipo->update($validated);
+        $equipo->save();
+        return view('pages.equipos.index',["equipos" => Equipo::all()]);
     }
 
     /**
@@ -91,6 +101,7 @@ class EquipoController extends Controller
      */
     public function destroy(Equipo $equipo)
     {
-        //
+        $equipo->delete();
+        return view('pages.equipos.index',["equipos" => Equipo::all()]);
     }
 }
